@@ -25,7 +25,7 @@ def worker_process(comm, rank):
         print(f"[Worker {rank}] Picked up Order #{order_id} → {item}")
         sys.stdout.flush()
 
-       # simulate real-world processing time
+        # simulate real-world processing time
         delay = random.uniform(0.5, 2.0)
         time.sleep(delay)
 
