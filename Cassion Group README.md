@@ -13,9 +13,7 @@ Bjurnh = Camariosa
 
 
 ## Overview
-This project implements a distributed order processing system using `mpi4py` for inter-process communication
-and Python's `multiprocessing` module for shared memory and synchronization. A master process generates customer orders and distributes them to worker processes,
-which simulate processing time before returning results. The master then collects everything into a shared list protected by a lock.
+This project implements a distributed order processing system using `mpi4py` for inter-process communication and Python's `multiprocessing` module for shared memory and synchronization. A master process generates customer orders and distributes them to worker processes, which simulate processing time before returning results. The master then collects everything into a shared list protected by a lock.
 
 ## Reflection Questions
 
@@ -35,4 +33,4 @@ which simulate processing time before returning results. The master then collect
 - placeholder for answer
 
 ### 6. How did you ensure consistent results when using multiple processes?
-- placeholder for answer
+- The fix was wrapping every append inside a `with lock:` block. The `Lock()` from `multiprocessing` acts as a mutual exclusion mechanism — only one process can hold the lock at a time. Any other process trying to enter the critical section has to wait until the lock is released. This guarantees that writes to `shared_orders` happen one at a time, preventing any overlap. After adding the lock, the master consistently printed a complete list with the correct number of entries every run, regardless of how the timing played out.
