@@ -4,14 +4,6 @@ import time
 import random
 import sys
 
-# ─────────────────────────────────────────────
-#  Shared-memory helpers (used by master only)
-# ─────────────────────────────────────────────
-manager = Manager()
-shared_orders = manager.list()
-lock = Lock()
-
-
 def worker_process(comm, rank):
     """
     Receive orders from master, simulate processing,
