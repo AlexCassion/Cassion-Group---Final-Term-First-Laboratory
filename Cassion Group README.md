@@ -1,7 +1,5 @@
 # Distributed Order Processing – CS323 Lab 1
 
----
-
 ## Members
 Alex Cassion = Cassion 
 
@@ -13,8 +11,6 @@ Michael Andres = Cabot
 
 Bjurnh = Camariosa
 
-
----
 
 ## Overview
 This project implements a distributed order processing system using `mpi4py` for inter-process communication
