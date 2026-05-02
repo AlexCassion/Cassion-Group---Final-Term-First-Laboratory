@@ -20,7 +20,7 @@ which simulate processing time before returning results. The master then collect
 ## Reflection Questions
 
 ### 1. How did you distribute orders among worker processes?
-- placeholder for answer
+- The master (rank 0) generates a list of 5–8 orders and uses a round-robin approach to assign them. Each order's index is taken modulo the number of workers, which gives the target worker rank. For example with 3 workers, Order #1 goes to Worker 1, Order #2 to Worker 2, Order #3 to Worker 3, Order #4 back to Worker 1, and so on. The actual sending is done through comm.send(), and workers block on comm.recv() until a message arrives. After all orders are sent, the master sends None to each worker as a shutdown signal.
 
 ### 2. What happens if there are more orders than workers?
 - placeholder for answer
