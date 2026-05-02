@@ -70,3 +70,27 @@ def master_process(comm, size):
         print(f"         Order #{o['id']} → {o['item']}")
     print()
     sys.stdout.flush()
+
+# ── distribute orders (round-robin across workers) ──────────────────────
+    for idx, order in enumerate(orders):
+        target_worker = (idx % worker_count) + 1
+        comm.send(order, dest=target_worker, tag=1)
+        print(f"[Master] Sent Order #{order['id']} to Worker {target_worker}")
+        sys.stdout.flush()
+
+    # send shutdown signal to every worker
+    for w in range(1, size):
+        comm.send(None, dest=w, tag=0)
+
+    # ── collect results & write to shared memory ─────────────────────────────
+    print("\n[Master] Waiting for workers to finish...\n")
+    sys.stdout.flush()
+
+    for _ in range(num_orders):
+        result = comm.recv(source=MPI.ANY_SOURCE, tag=2)
+
+        # Lock ensures only one write at a time → no race conditions
+        with lock:
+            shared_orders.append(result)
+            print(f"[Master] Stored result: {result}")
+            sys.stdout.flush()
