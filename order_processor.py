@@ -36,13 +36,13 @@ def worker_process(comm, rank):
             "duration_s"   : round(delay, 2),
         }
 
-        # send the finished result back to master
+              # send the finished result back to master
         comm.send(result, dest=0, tag=2)
         print(f"[Worker {rank}] Finished Order #{order_id} in {delay:.2f}s")
         sys.stdout.flush()
 
 
-def master_process(comm, size):
+def master_process(comm, size, shared_orders, lock):
     """
     Generate orders, hand them out to workers,
     collect results into shared memory with a Lock.
@@ -63,7 +63,7 @@ def master_process(comm, size):
     print()
     sys.stdout.flush()
 
-# ── distribute orders (round-robin across workers) ──────────────────────
+    # ── distribute orders (round-robin across workers) ───────────────────────
     for idx, order in enumerate(orders):
         target_worker = (idx % worker_count) + 1
         comm.send(order, dest=target_worker, tag=1)
