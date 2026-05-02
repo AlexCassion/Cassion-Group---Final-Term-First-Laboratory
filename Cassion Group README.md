@@ -3,11 +3,16 @@
 ---
 
 ## Members
-#Alex Cassion = Cassion 
-#potato715 = Pabellan 
-#CS3C = Soriano
-#Michael Andres = Cabot
-#Bjurnh = Camariosa
+Alex Cassion = Cassion 
+
+potato715 = Pabellan 
+
+CS3C = Soriano
+
+Michael Andres = Cabot
+
+Bjurnh = Camariosa
+
 
 ---
 
