@@ -29,7 +29,7 @@ which simulate processing time before returning results. The master then collect
 - placeholder for answer
 
 ### 4. How did you implement shared memory, and where was it initialized?
-- placeholder for answer
+- Shared memory was set up using `multiprocessing.Manager` at the top of the script, before MPI takes over. `manager.list()` returns a proxy object — basically a list that lives in a separate manager server process, and any process that has a reference to it can read and write through that proxy. 
 
 ### 5. What issues occurred when multiple workers wrote to shared memory simultaneously?
 - placeholder for answer
