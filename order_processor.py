@@ -32,3 +32,41 @@ def worker_process(comm, rank):
 
         print(f"[Worker {rank}] Picked up Order #{order_id} → {item}")
         sys.stdout.flush()
+
+       # simulate real-world processing time
+        delay = random.uniform(0.5, 2.0)
+        time.sleep(delay)
+
+        result = {
+            "order_id"     : order_id,
+            "item"         : item,
+            "processed_by" : rank,
+            "duration_s"   : round(delay, 2),
+        }
+
+        # send the finished result back to master
+        comm.send(result, dest=0, tag=2)
+        print(f"[Worker {rank}] Finished Order #{order_id} in {delay:.2f}s")
+        sys.stdout.flush()
+
+
+def master_process(comm, size):
+    """
+    Generate orders, hand them out to workers,
+    collect results into shared memory with a Lock.
+    """
+    item_catalog = [
+        "Laptop", "Mechanical Keyboard", "USB-C Hub", "Webcam",
+        "Monitor", "Mouse Pad", "SSD", "RAM Kit",
+    ]
+
+    num_orders   = random.randint(5, 8)
+    orders       = [{"id": i + 1, "item": random.choice(item_catalog)}
+                    for i in range(num_orders)]
+    worker_count = size - 1            # rank 0 is master
+
+    print(f"\n[Master] Generated {num_orders} orders:")
+    for o in orders:
+        print(f"         Order #{o['id']} → {o['item']}")
+    print()
+    sys.stdout.flush()
