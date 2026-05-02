@@ -94,3 +94,35 @@ def master_process(comm, size):
             shared_orders.append(result)
             print(f"[Master] Stored result: {result}")
             sys.stdout.flush()
+ # ── final summary ────────────────────────────────────────────────────────
+    print("\n" + "═" * 55)
+    print(f"  ALL ORDERS PROCESSED  ({len(shared_orders)} total)")
+    print("═" * 55)
+    for entry in sorted(shared_orders, key=lambda x: x["order_id"]):
+        print(
+            f"  Order #{entry['order_id']:>2} | {entry['item']:<22} "
+            f"| Worker {entry['processed_by']} | {entry['duration_s']}s"
+        )
+    print("═" * 55 + "\n")
+    sys.stdout.flush()
+
+
+# ─────────────────────────────────────────────
+#  Entry point
+# ─────────────────────────────────────────────
+if __name__ == "__main__":
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+
+    if size < 2:
+        if rank == 0:
+            print("Need at least 2 processes.  Run: mpirun -np 4 python order_processor.py")
+        sys.exit(1)
+
+    random.seed(rank * 42)   # different seed per process for varied delays
+
+    if rank == 0:
+        master_process(comm, size)
+    else:
+        worker_process(comm, rank)
