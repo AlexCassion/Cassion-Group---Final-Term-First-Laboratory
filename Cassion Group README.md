@@ -23,7 +23,7 @@ which simulate processing time before returning results. The master then collect
 - The master (rank 0) generates a list of 5–8 orders and uses a round-robin approach to assign them. Each order's index is taken modulo the number of workers, which gives the target worker rank. For example with 3 workers, Order #1 goes to Worker 1, Order #2 to Worker 2, Order #3 to Worker 3, Order #4 back to Worker 1, and so on. The actual sending is done through comm.send(), and workers block on comm.recv() until a message arrives. After all orders are sent, the master sends None to each worker as a shutdown signal.
 
 ### 2. What happens if there are more orders than workers?
-- placeholder for answer
+- Because of the round-robin distribution, extra orders just wrap back around to the first worker again. So if there are 7 orders and 3 workers, Workers 1 and 2 end up with 2 orders each while Worker 3 gets 1. This means some workers finish earlier than others — they receive their shutdown signal and exit while other workers are still processing. It's not perfectly balanced but it works without any worker sitting idle. A smarter approach would be a work-stealing queue where idle workers pull the next available task, but that's more complex to implement.
 
 ### 3. How did processing delays affect the order completion?
 - placeholder for answer
